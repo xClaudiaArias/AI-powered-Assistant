@@ -1,95 +1,78 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+'use client'
+
+import { Box, Button, Stack, TextField } from '@mui/material';
+import { useState } from 'react';
+import SendIcon from '@mui/icons-material/Send';
+import SmartToyIcon from '@mui/icons-material/SmartToy';
+import PersonIcon from '@mui/icons-material/Person';
 
 export default function Home() {
+  const [messages, setMessages] = useState([
+    {
+      role: 'assistant',
+      content: 'Hello, I am a support assistant. How can I help you today?'
+    }
+  ])
+  const [message, setMessage] = useState('')
+
+  const sendMessage = async () => {
+    // code
+  }
+
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>app/page.js</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
+    <Box width={"100vw"} height={"100vh"} display={'flex'} flexDirection={'column'} justifyContent={'center'} alignItems={'center'}>
+      <Stack direction={'column'} width={'500px'} height={'700px'} border={'1px solid black'} padding={2} spacing={3} backgroundColor={'#030126'}>
+        <Stack direction={'column'} spacing={2} flexGrow={1} overflow={'auto'} maxHeight={'100%'} >
+          {
+            messages.map((message, i) => {
+              <Box key={i} display='flex' justifyContent={message.role === 'assistant' ? 'flex-start' : 'flex-end'}>
+                <Box bgcolor={'message.role' === 'assistant' ? 'primary.main' : 'secondary.main'} color={'white'} borderRadius={16} p={3}>
+                  {message.role === 'assistant' ? (
+                    <>
+                      <SmartToyIcon /> {message.content}
+                    </>
+                  ) : (
+                    <>
+                      <PersonIcon /> {message.content}
+                    </>
+                  )}
+                </Box>
+              </Box>
+            })
+          }
+        </Stack>
+        <Stack direction={'row'} spacing={2}>
+          <TextField
+            label="message"
+            fullWidth
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            sx={{
+              '& .MuiInputBase-root': {
+                color: 'white', // Text color
+              },
+              '& .MuiInputLabel-root': {
+                color: 'white', // Label color
+              },
+              '& .MuiOutlinedInput-notchedOutline': {
+                borderColor: 'white', // Border color
+              },
+              '& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline': {
+                borderColor: 'lightgray', // Border color on hover
+              },
+            }}
+            InputProps={{
+              style: {
+                color: 'white', // Text color inside the input
+              },
+            }}
+          />
+          <Button variant="contained">
+            <SendIcon />
+          </Button>
+        </Stack>
 
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  );
+      </Stack>
+    </Box>
+  )
 }
