@@ -1,23 +1,24 @@
 import { NextResponse } from "next/server"; // used to create HTTP responses in your API routes.
 import OpenAI from "openai";
 
-const systemPrompt = "You are a helpful and friendly assistant who always provides detailed answers."; //sets the behavior or tone of the AI. 
+const systemPrompt = "You are a hiring manager assistant ready to help and train job seekers by interviewing them and offering tips."; //sets the behavior or tone of the AI. 
 
 
 export async function POST(req) {
-    const openai = new OpenAI() // This creates an instance of the OpenAI client, use to make requests to the OpenAI API.
+    const openai = new OpenAI({
+        apiKey: process.env.OPENAI_API_KEY, // Ensure your API key is correctly set up
+    }); // This creates an instance of the OpenAI client, use to make requests to the OpenAI API.
     const data = await req.json()
 
     const completion = await openai.chat.completions.create({ // This sends a request to the OpenAI API to generate a response.
         messages: [{role: 'system', content: systemPrompt}, ...data], // this is an array of messages sent to the AI. The first message is the systemPrompt
         // ..data spreads the user's messages into the array, continuing the conversation.
-        model: 'gpt-4o',
+        model: 'gpt-3.5-turbo',
         stream: true, // enable streaming responses
     })
-
+    const encoder = new TextEncoder()  // Create a TextEncoder to convert strings to Uint8Array
     const stream = new ReadableStream({
         async start(controller) {
-          const encoder = new TextEncoder() // Create a TextEncoder to convert strings to Uint8Array
             try {
                 // Iterate over the streamed chunks of the response
                 for await (const chunk of completion) {
@@ -35,6 +36,8 @@ export async function POST(req) {
             },
         })
     
-      return new NextResponse(stream) // Return the stream as the response
+    return new Response(stream, {
+        headers: { "Content-Type": "text/plain; charset=utf-8" },
+    }); // Return the stream as the response
 }
 
